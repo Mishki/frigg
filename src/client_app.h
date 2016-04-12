@@ -3,15 +3,22 @@
 
 #include "include/cef_app.h"
 
+//ClientApp overrides CefApp and CefBrowserProcessHandler
 class ClientApp : public CefApp,
-                  public CefBrowserProcessHandler {
+                  public CefBrowserProcessHandler, //only called in broswer process. CefRenderProcessHandler is called only in render process
+                  public CefRenderProcessHandler{
+
     public:
     ClientApp();
     virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() OVERRIDE {return this;}
-    virtual void OnContextInitialized() OVERRIDE;
+    virtual void OnContextInitialized() OVERRIDE; //event handler fired immediately after cef software gets created: we NEED to override this
+
 
     private:
-    IMPLEMENT_REFCOUNTING(ClientApp);
+    IMPLEMENT_REFCOUNTING(ClientApp); //for shared reference ptrs to recount how many links to ptrs are there
 };
 
 #endif  // LIBFRIGGA_CLIENT_APP_H_
+
+//CefRenderProcessHandler -- javascript
+//GetRenderProcessHandler

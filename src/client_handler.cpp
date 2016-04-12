@@ -17,10 +17,11 @@ ClientHandler::~ClientHandler() {
     g_instance = NULL;
 }
 
+//Right after browser window is created
 void ClientHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
 
-    browser_list_.push_back(browser);
+    browser_list_.push_back(browser); //push browser handler onto main list of browsers
 }
 
 bool ClientHandler::DoClose(CefRefPtr<CefBrowser> browser) {
@@ -29,6 +30,8 @@ bool ClientHandler::DoClose(CefRefPtr<CefBrowser> browser) {
     return false;
 }
 
+//removes browser window from list, and if empty, fires quit message
+//This quits the Cef message loop and exits the application
 void ClientHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
 
@@ -45,20 +48,36 @@ void ClientHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
     }
 }
 
+//loading for each separate frame in browser
 void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode) {
     CEF_REQUIRE_UI_THREAD();
 
     if (frame->IsMain()) {
         std::cout << "Status Code: " << httpStatusCode << std::endl;
-        frame->GetSource(new AsyncString());
+        frame->GetSource(new AsyncString()); //Ajax request, to wait for code once requested
     }
 }
+//rectanlge printable space of browser
 bool ClientHandler::GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) {
     rect = CefRect(0, 0, RENDER_WIDTH, RENDER_HEIGHT);
     return true;
 }
 void ClientHandler::OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::PaintElementType type, const CefRenderHandler::RectList &dirtyRects, const void *buffer, int width, int height) {
 
+}
+
+void ClientHandler::OnContextCreated(
+        CefRefPtr<CefBrowser> browser,
+        CefRefPtr<CefFrame> frame,
+        CefRefPtr<CefV8Context> context) {
+    // Retrieve the context's window object.
+    CefRefPtr<CefV8Value> object = context->GetGlobal();
+
+    // Create a new V8 string value. See the "Basic JS Types" section below.
+    CefRefPtr<CefV8Value> str = CefV8Value::CreateString("My Value!");
+
+    // Add the string to the window object as "window.myval". See the "JS Objects" section below.
+    object->SetValue("myval", str, V8_PROPERTY_ATTRIBUTE_NONE);
 }
 
 

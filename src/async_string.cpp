@@ -4,6 +4,7 @@
 
 AsyncString::AsyncString() {}
 
+//The string will contain the html
 void AsyncString::Visit(const CefString &string) {
     std::cout << string.ToString() << std::endl;
     CefQuitMessageLoop();

@@ -7,13 +7,19 @@ ClientApp::ClientApp() {}
 void ClientApp::OnContextInitialized() {
     CEF_REQUIRE_UI_THREAD();
 
+    //Creates a broswer window (1 tab in reality is a browser window)
+
     CefWindowInfo window_info;
-    window_info.SetAsWindowless(0, true);
+    window_info.SetAsWindowless(0, true); //in cef simple(the tutorial), not windowless.
+    //TODO: Go through code for cefsimple
 
-    CefBrowserSettings browser_settings;
-    CefRefPtr<ClientHandler> client_handler(new ClientHandler());
+    CefBrowserSettings browser_settings; //class
+    //creating a singleton instance of ClientHandler
+    //All browsers share this ClientHandler instance which is responsible for customizing browser behavior
+    //and handling browser-related callbacks
+    CefRefPtr<ClientHandler> client_handler(new ClientHandler()); //overriding to deal with other events
 
-
+    //creating a browser window
     CefBrowserHost::CreateBrowser(
         window_info,
         client_handler.get(),
@@ -22,3 +28,4 @@ void ClientApp::OnContextInitialized() {
         NULL
     );
 }
+
