@@ -81,6 +81,7 @@ void ClientHandler::OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::Pai
 
 }
 
+//Window binding: To attach values to a frame's window object
 void ClientHandler::OnContextCreated(
         CefRefPtr<CefBrowser> browser,
         CefRefPtr<CefFrame> frame,

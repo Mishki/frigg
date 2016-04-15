@@ -16,6 +16,12 @@ int main(int argc, char *argv[]) {
     CefInitialize(main_args, settings, app.get(), NULL); //spawns browser threads and properties
     //shared space for communication between threads
 
+    //Simplest way to execute JS from a client application
+    CefRefPtr<CefBrowser> browser;
+    CefRefPtr<CefFrame> frame = browser ->GetMainFrame();
+    frame -> ExecuteJavaScript("alert('ExecuteJavascript Works!!');",
+            frame -> GetURL(), 0);
+
     //Running cef message loop
     CefRunMessageLoop(); //Blocking loop goes thru msg queue and figures out who the message is for, and the thread will execute whatever
     CefShutdown(); //termination msg to all threads to stop
