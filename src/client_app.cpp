@@ -1,6 +1,7 @@
 #include "client_app.h"
 #include "client_handler.h"
 #include "include/wrapper/cef_helpers.h"
+#include "ClientV8ExtensionHandler.h"
 
 ClientApp::ClientApp() {}
 
@@ -11,7 +12,6 @@ void ClientApp::OnContextInitialized() {
 
     CefWindowInfo window_info;
     window_info.SetAsWindowless(0, true); //in cef simple(the tutorial), not windowless.
-    //TODO: Go through code for cefsimple
 
     CefBrowserSettings browser_settings; //class
     //creating a singleton instance of ClientHandler
