@@ -4,6 +4,15 @@
 #include "include/cef_app.h"
 #include "include/wrapper/cef_helpers.h"
 
+
+#include "include/cef_app.h"
+#include "include/cef_base.h"
+#include "include/cef_client.h"
+#include "include/cef_command_line.h"
+#include "include/cef_frame.h"
+//#include "include/cef_runnable.h"
+#include "include/cef_web_plugin.h"
+
 namespace {
 ClientHandler *g_instance = NULL;
 }
@@ -20,6 +29,12 @@ ClientHandler::~ClientHandler() {
 //Right after browser window is created
 void ClientHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
+
+    if ( !m_Browser.get() ) {
+        // We need to keep the main child window, but not popup windows
+        m_Browser     = browser;
+        m_BrowserHwnd = browser->GetHost()->GetWindowHandle();
+    }
 
     browser_list_.push_back(browser); //push browser handler onto main list of browsers
 }

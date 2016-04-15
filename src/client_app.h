@@ -12,7 +12,11 @@ class ClientApp : public CefApp,
     ClientApp();
     virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() OVERRIDE {return this;}
     virtual void OnContextInitialized() OVERRIDE; //event handler fired immediately after cef software gets created: we NEED to override this
-
+    CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() OVERRIDE
+    {
+        return this;
+    }
+    void OnWebKitInitialized() OVERRIDE;
 
     private:
     IMPLEMENT_REFCOUNTING(ClientApp); //for shared reference ptrs to recount how many links to ptrs are there
