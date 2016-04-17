@@ -49,8 +49,6 @@ class ClientHandler : public CefClient, //gives access to root of diff handlers 
     virtual bool GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) OVERRIDE;
     virtual void OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::PaintElementType type, const CefRenderHandler::RectList &dirtyRects, const void *buffer, int width, int height) OVERRIDE;
 
-    virtual void OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context) OVERRIDE;
-
     protected:
     typedef std::list<CefRefPtr<CefBrowser>> BrowserList; //List of handlers to gives access to all diff components of a web page
     BrowserList browser_list_;

@@ -81,20 +81,6 @@ void ClientHandler::OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::Pai
 
 }
 
-//Window binding: To attach values to a frame's window object
-void ClientHandler::OnContextCreated(
-        CefRefPtr<CefBrowser> browser,
-        CefRefPtr<CefFrame> frame,
-        CefRefPtr<CefV8Context> context) {
-    // Retrieve the context's window object.
-    CefRefPtr<CefV8Value> object = context->GetGlobal();
-
-    // Create a new V8 string value. See the "Basic JS Types" section below.
-    CefRefPtr<CefV8Value> str = CefV8Value::CreateString("My Value!");
-
-    // Add the string to the window object as "window.myval". See the "JS Objects" section below.
-    object->SetValue("myval", str, V8_PROPERTY_ATTRIBUTE_NONE);
-}
 
 
 
