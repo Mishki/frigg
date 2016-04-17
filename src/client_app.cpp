@@ -30,6 +30,9 @@ void ClientApp::OnContextInitialized() {
 }
 
 void ClientApp::OnWebKitInitialized() {
+    // all js execution takes place on this thread
+    CEF_REQUIRE_RENDERER_THREAD();
+ 
     std::string app_code =
                     "var app;"
                     "if (!app)"
@@ -43,4 +46,20 @@ void ClientApp::OnWebKitInitialized() {
 
     CefRegisterExtension( "v8/app", app_code, new ClientV8ExtensionHandler(this) );
 }
+//Window binding: To attach values to a frame's window object
+void ClientApp::OnContextCreated(
+        CefRefPtr<CefBrowser> browser,
+        CefRefPtr<CefFrame> frame,
+        CefRefPtr<CefV8Context> context) {
 
+    // all js execution takes place on this thread
+    CEF_REQUIRE_RENDERER_THREAD();
+    // Retrieve the context's window object.
+    CefRefPtr<CefV8Value> object = context->GetGlobal();
+
+    // Create a new V8 string value. See the "Basic JS Types" section below.
+    CefRefPtr<CefV8Value> str = CefV8Value::CreateString("My Value!");
+
+    // Add the string to the window object as "window.myval". See the "JS Objects" section below.
+    object->SetValue("myval", str, V8_PROPERTY_ATTRIBUTE_NONE);
+}
