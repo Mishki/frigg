@@ -19,7 +19,6 @@ class ClientApp : public CefApp,
     void OnWebKitInitialized() OVERRIDE;
     virtual void OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context) OVERRIDE;
 
-
 private:
     IMPLEMENT_REFCOUNTING(ClientApp); //for shared reference ptrs to recount how many links to ptrs are there
 };

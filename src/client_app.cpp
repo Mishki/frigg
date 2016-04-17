@@ -30,7 +30,9 @@ void ClientApp::OnContextInitialized() {
 }
 
 void ClientApp::OnWebKitInitialized() {
+    // all js execution takes place on this thread
     CEF_REQUIRE_RENDERER_THREAD();
+
     std::string app_code =
                     "var app;"
                     "if (!app)"
@@ -50,6 +52,7 @@ void ClientApp::OnContextCreated(
         CefRefPtr<CefFrame> frame,
         CefRefPtr<CefV8Context> context) {
 
+    // all js execution takes place on this thread
     CEF_REQUIRE_RENDERER_THREAD();
     // Retrieve the context's window object.
     CefRefPtr<CefV8Value> object = context->GetGlobal();
@@ -60,4 +63,3 @@ void ClientApp::OnContextCreated(
     // Add the string to the window object as "window.myval". See the "JS Objects" section below.
     object->SetValue("myval", str, V8_PROPERTY_ATTRIBUTE_NONE);
 }
-

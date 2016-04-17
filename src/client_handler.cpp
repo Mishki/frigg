@@ -80,8 +80,3 @@ bool ClientHandler::GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) {
 void ClientHandler::OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::PaintElementType type, const CefRenderHandler::RectList &dirtyRects, const void *buffer, int width, int height) {
 
 }
-
-
-
-
-
