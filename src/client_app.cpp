@@ -11,8 +11,9 @@ void ClientApp::OnContextInitialized() {
     //Creates a broswer window (1 tab in reality is a browser window)
 
     CefWindowInfo window_info;
-    window_info.SetAsWindowless(0, true); //in cef simple(the tutorial), not windowless.
 
+    window_info.SetAsWindowless(0, true); //in cef simple(the tutorial), not windowless.
+//
     CefBrowserSettings browser_settings; //class
     //creating a singleton instance of ClientHandler
     //All browsers share this ClientHandler instance which is responsible for customizing browser behavior

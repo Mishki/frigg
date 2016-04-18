@@ -13,7 +13,9 @@ set(LIBFRIGGA_SOURCE_FILES
     src/client_handler.cpp
     src/client_handler.h
     src/async_string.cpp
-    src/async_string.h src/ClientV8ExtensionHandler.h src/ClientV8ExtensionHandler.cpp)
+    src/async_string.h
+    src/ClientV8ExtensionHandler.h
+    src/ClientV8ExtensionHandler.cpp)
 
 add_subdirectory(libcef3)
 include_directories(libcef3)

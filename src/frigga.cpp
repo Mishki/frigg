@@ -17,10 +17,10 @@ int main(int argc, char *argv[]) {
     //shared space for communication between threads
 
     //Simplest way to execute JS from a client application
-    CefRefPtr<CefBrowser> browser;
-    CefRefPtr<CefFrame> frame = browser ->GetMainFrame();
-    frame -> ExecuteJavaScript("alert('ExecuteJavascript Works!!');",
-            frame -> GetURL(), 0);
+//    CefRefPtr<CefBrowser> browser;
+//    CefRefPtr<CefFrame> frame = browser ->GetMainFrame();
+//    frame -> ExecuteJavaScript("alert('ExecuteJavascript Works!!');",
+//            frame -> GetURL(), 0);
 
     //Running cef message loop
     CefRunMessageLoop(); //Blocking loop goes thru msg queue and figures out who the message is for, and the thread will execute whatever
