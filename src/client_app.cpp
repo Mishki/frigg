@@ -1,7 +1,7 @@
 #include "client_app.h"
 #include "client_handler.h"
 #include "include/wrapper/cef_helpers.h"
-#include "ClientV8ExtensionHandler.h"
+//#include "ClientV8ExtensionHandler.h"
 
 ClientApp::ClientApp() {}
 
@@ -30,23 +30,23 @@ void ClientApp::OnContextInitialized() {
     );
 }
 
-void ClientApp::OnWebKitInitialized() {
-    // all js execution takes place on this thread
-    CEF_REQUIRE_RENDERER_THREAD();
-
-    std::string app_code =
-                    "var app;"
-                    "if (!app)"
-                    "    app = {};"
-                    "(function() {"
-                    "    app.ChangeTextInJS = function(text) {"
-                    "        native function ChangeTextInJS();"
-                    "        return ChangeTextInJS(text);"
-                    "    };"
-                    "})();;";
-
-    CefRegisterExtension( "v8/app", app_code, new ClientV8ExtensionHandler(this) );
-}
+//void ClientApp::OnWebKitInitialized() {
+//    // all js execution takes place on this thread
+//    CEF_REQUIRE_RENDERER_THREAD();
+//
+//    std::string app_code =
+//                    "var app;"
+//                    "if (!app)"
+//                    "    app = {};"
+//                    "(function() {"
+//                    "    app.ChangeTextInJS = function(text) {"
+//                    "        native function ChangeTextInJS();"
+//                    "        return ChangeTextInJS(text);"
+//                    "    };"
+//                    "})();;";
+//
+//    CefRegisterExtension( "v8/app", app_code, new ClientV8ExtensionHandler(this) );
+//}
 //Window binding: To attach values to a frame's window object
 void ClientApp::OnContextCreated(
         CefRefPtr<CefBrowser> browser,
@@ -59,7 +59,7 @@ void ClientApp::OnContextCreated(
     CefRefPtr<CefV8Value> object = context->GetGlobal();
 
     // Create a new V8 string value. See the "Basic JS Types" section below.
-    CefRefPtr<CefV8Value> str = CefV8Value::CreateString("My Value!");
+    CefRefPtr<CefV8Value> str = CefV8Value::CreateString("YYY---YYY");
 
     // Add the string to the window object as "window.myval". See the "JS Objects" section below.
     object->SetValue("myval", str, V8_PROPERTY_ATTRIBUTE_NONE);
