@@ -1,7 +1,8 @@
 #include "client_app.h"
 #include "client_handler.h"
 #include "include/wrapper/cef_helpers.h"
-//#include "ClientV8ExtensionHandler.h"
+// #include "ClientV8ExtensionHandler.h"
+#include "MyV8Accessor.h"
 
 ClientApp::ClientApp() {}
 
@@ -59,8 +60,11 @@ void ClientApp::OnContextCreated(
     CefRefPtr<CefV8Value> object = context->GetGlobal();
 
     // Create a new V8 string value. See the "Basic JS Types" section below.
-    CefRefPtr<CefV8Value> str = CefV8Value::CreateString("YYY---YYY");
+    CefRefPtr<CefV8Value> obj = CefV8Value::CreateObject(NULL);
 
     // Add the string to the window object as "window.myval". See the "JS Objects" section below.
-    object->SetValue("myval", str, V8_PROPERTY_ATTRIBUTE_NONE);
+    obj->SetValue("myval", CefV8Value::CreateString("My String!"));
+
+    // create accessor to obj
+    CefRefPtr<CefV8Accessor> accessor = new MyV8Accessor();
 }
