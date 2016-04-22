@@ -13,7 +13,9 @@ set(LIBFRIGGA_SOURCE_FILES
     src/client_handler.cpp
     src/client_handler.h
     src/async_string.cpp
-    src/async_string.h)
+    src/async_string.h
+    src/ClientV8ExtensionHandler.h
+    src/ClientV8ExtensionHandler.cpp)
 
 add_subdirectory(libcef3)
 include_directories(libcef3)
@@ -24,6 +26,7 @@ set(LIBCEF_RSRCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libcef3/resources)
 set(LIBCEF_LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libcef3/binary)
 set(LIBCEF_LIB ${LIBCEF_LIBS_DIR}/libcef.so)
 
+#need to change to library executable has main entry point
 add_executable(${CMAKE_PROJECT_NAME} ${LIBFRIGGA_SOURCE_FILES})
 add_dependencies(${CMAKE_PROJECT_NAME} libcef_dll_wrapper)
 target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} libcef_dll_wrapper)
