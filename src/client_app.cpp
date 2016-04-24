@@ -57,14 +57,21 @@ void ClientApp::OnContextCreated(
     // all js execution takes place on this thread
     CEF_REQUIRE_RENDERER_THREAD();
     // Retrieve the context's window object.
-    CefRefPtr<CefV8Value> object = context->GetGlobal();
-
-    // Create a new V8 string value. See the "Basic JS Types" section below.
-    CefRefPtr<CefV8Value> obj = CefV8Value::CreateObject(NULL);
-
-    // Add the string to the window object as "window.myval". See the "JS Objects" section below.
-    obj->SetValue("myval", CefV8Value::CreateString("My String!"));
+    CefRefPtr<CefV8Value> globe = context->GetGlobal();
 
     // create accessor to obj
     CefRefPtr<CefV8Accessor> accessor = new MyV8Accessor();
+
+    // Create a new V8 string value. See the "Basic JS Types" section below.
+    CefRefPtr<CefV8Value> obj = CefV8Value::CreateObject(accessor);
+
+    //CefRefPtr<CefV8Value> str = CefV8Value::CreateString("XXXXX");
+
+    //setting value to the JS object we created
+    //obj->SetValue("myval", V8_ACCESS_CONTROL_DEFAULT, V8_PROPERTY_ATTRIBUTE_NONE); --> Correct one
+    obj -> SetValue("myval", CefV8Value::CreateString("My String"), V8_PROPERTY_ATTRIBUTE_NONE);
+
+    //Add the object to the window as "window.myglobalvalue"
+    globe->SetValue("myglobalvalue", obj, V8_PROPERTY_ATTRIBUTE_NONE);
+
 }
