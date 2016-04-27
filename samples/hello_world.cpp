@@ -3,8 +3,8 @@
 
 int main(int argc, char *argv[]) {
     std::cout << "hello world!!!" << std::endl;
-    Frigga frigga;
-    frigga.init(argc, argv);
+    Frigga frigga{argc, argv};
+    std::cout << "ended" << std::endl;
 
     return 0;
 }

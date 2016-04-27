@@ -59,8 +59,8 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
     if (frame->IsMain()) {
         frame->ExecuteJavaScript("window.blue = 12345;", frame->GetURL(),0);
         std::cout << "Status Code: " << httpStatusCode << std::endl;
-        frame->GetSource(
-            new AsyncString());
+//        frame->GetSource(
+//            new AsyncString());
     }
 }
 

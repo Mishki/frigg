@@ -7,6 +7,7 @@ endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(FRIGGA_SOURCE_FILES
+    src/frigga_helper.cpp
     src/frigga.cpp
     src/frigga.h
     src/client_app.cpp
@@ -32,12 +33,20 @@ add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGGA_SOURCE_FILES})
 add_dependencies(${CMAKE_PROJECT_NAME} libcef_dll_wrapper)
 target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} libcef_dll_wrapper X11)
 
+add_executable(${CMAKE_PROJECT_NAME}_helper ${FRIGGA_SOURCE_FILES})
+target_link_libraries(${CMAKE_PROJECT_NAME}_helper ${LIBCEF_LIB} libcef_dll_wrapper X11)
+
 if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE})
     set_target_properties(
         ${CMAKE_PROJECT_NAME}
         PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    set_target_properties(
+        ${CMAKE_PROJECT_NAME}_helper
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif ()
 

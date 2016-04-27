@@ -11,8 +11,7 @@ public:
 
 class Frigga {
 public:
-    Frigga();
-    int init(int argc, char *argv[]);
+    Frigga(int argc, char *argv[]);
     ~Frigga();
 private:
 };

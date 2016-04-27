@@ -3,6 +3,7 @@
 
 #include <X11/Xlib.h>
 #include <iostream>
+#include <exception>
 #include "include/base/cef_logging.h"
 
 // TODO REMOVE
@@ -27,23 +28,21 @@ namespace {
 
 //guarded_thread th;
 
-Frigga::Frigga() {}
-Frigga::~Frigga() {}
-
-int Frigga::init(int argc, char *argv[]) {
+Frigga::Frigga(int argc, char *argv[]) {
     CefMainArgs main_args(argc, argv);
     CefRefPtr<ClientApp> app(new ClientApp);
 
-        int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
-        if (exit_code >= 0) {
-            return 1;
-        }
+//    int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
+//    if (exit_code >= 0) {
+//        throw std::runtime_error("failed (exit_code >= 0)");
+//    }
 
     // TODO REMOVE
     XSetErrorHandler(XErrorHandlerImpl);
     XSetIOErrorHandler(XIOErrorHandlerImpl);
 
     CefSettings settings;
+    CefString(&settings.browser_subprocess_path).FromASCII("./frigga_helper");
 
     settings.remote_debugging_port = 8888;  // TODO REMOVE
     CefInitialize(main_args, settings, app.get(), NULL);
@@ -52,5 +51,5 @@ int Frigga::init(int argc, char *argv[]) {
     CefShutdown();
 
     std::cout << "haza" << std::endl;
-    return 0;
 }
+Frigga::~Frigga() {}
