@@ -31,10 +31,10 @@ set(LIBCEF_LIB ${CMAKE_CURRENT_SOURCE_DIR}/${LIBCEF_LIBS_DIR}/libcef.so)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGGA_SOURCE_FILES})
 add_dependencies(${CMAKE_PROJECT_NAME} libcef_dll_wrapper)
-target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} libcef_dll_wrapper X11)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} pthread libcef_dll_wrapper X11)
 
 add_executable(${CMAKE_PROJECT_NAME}_helper ${FRIGGA_SOURCE_FILES})
-target_link_libraries(${CMAKE_PROJECT_NAME}_helper ${LIBCEF_LIB} libcef_dll_wrapper X11)
+target_link_libraries(${CMAKE_PROJECT_NAME}_helper ${LIBCEF_LIB} pthread libcef_dll_wrapper X11)
 
 if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE})

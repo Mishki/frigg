@@ -3,6 +3,7 @@
 
 #include <X11/Xlib.h>
 #include <iostream>
+#include <thread>
 #include <exception>
 #include "include/base/cef_logging.h"
 
@@ -29,13 +30,15 @@ namespace {
 //guarded_thread th;
 
 Frigga::Frigga(int argc, char *argv[]) {
+    std::thread t1(&Frigga::start, this, argc, argv);
+    t1.join();
+}
+
+Frigga::~Frigga() {}
+
+void Frigga::start(int argc, char *argv[]) {
     CefMainArgs main_args(argc, argv);
     CefRefPtr<ClientApp> app(new ClientApp);
-
-//    int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
-//    if (exit_code >= 0) {
-//        throw std::runtime_error("failed (exit_code >= 0)");
-//    }
 
     // TODO REMOVE
     XSetErrorHandler(XErrorHandlerImpl);
@@ -52,4 +55,3 @@ Frigga::Frigga(int argc, char *argv[]) {
 
     std::cout << "haza" << std::endl;
 }
-Frigga::~Frigga() {}
