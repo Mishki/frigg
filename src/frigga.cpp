@@ -34,10 +34,10 @@ int Frigga::init(int argc, char *argv[]) {
     CefMainArgs main_args(argc, argv);
     CefRefPtr<ClientApp> app(new ClientApp);
 
-    //    int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
-    //    if (exit_code >= 0) {
-    //        return;
-    //    }
+        int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
+        if (exit_code >= 0) {
+            return 1;
+        }
 
     // TODO REMOVE
     XSetErrorHandler(XErrorHandlerImpl);
