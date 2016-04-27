@@ -15,8 +15,8 @@
 class ClientHandler : public CefClient,
                       public CefLifeSpanHandler,
                       public CefLoadHandler {
-//                      public CefLoadHandler,
-//                      public CefRenderHandler {
+    //                      public CefLoadHandler,
+    //                      public CefRenderHandler {
 public:
     ClientHandler();
     ~ClientHandler();
@@ -28,7 +28,7 @@ public:
     // CefClient methods
     virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE {return this;}
     virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE {return this;}
-//    virtual CefRefPtr<CefRenderHandler> GetRenderHandler() OVERRIDE {return this;}
+    //    virtual CefRefPtr<CefRenderHandler> GetRenderHandler() OVERRIDE {return this;}
 
     // CefLifeSpanHandler methods
     virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
@@ -36,17 +36,19 @@ public:
     virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
 
     // CefLoadHandler methods
-    virtual void OnLoadEnd(CefRefPtr<CefBrowser> browser,
-                           CefRefPtr<CefFrame> frame,
-                           int httpStatusCode) OVERRIDE;
+    virtual void OnLoadEnd(
+        CefRefPtr<CefBrowser> browser,
+        CefRefPtr<CefFrame> frame,
+        int httpStatusCode
+    ) OVERRIDE;
 
-//    // CefRenderHandler methods
-//    virtual bool GetViewRect(CefRefPtr<CefBrowser> browser,
-//                             CefRect &rect) OVERRIDE;
-//    virtual void OnPaint(CefRefPtr<CefBrowser> browser,
-//                         CefRenderHandler::PaintElementType type,
-//                         const CefRenderHandler::RectList &dirtyRects,
-//                         const void *buffer, int width, int height) OVERRIDE;
+    //    // CefRenderHandler methods
+    //    virtual bool GetViewRect(CefRefPtr<CefBrowser> browser,
+    //                             CefRect &rect) OVERRIDE;
+    //    virtual void OnPaint(CefRefPtr<CefBrowser> browser,
+    //                         CefRenderHandler::PaintElementType type,
+    //                         const CefRenderHandler::RectList &dirtyRects,
+    //                         const void *buffer, int width, int height) OVERRIDE;
 
 protected:
     typedef std::list<CefRefPtr<CefBrowser>> BrowserList;

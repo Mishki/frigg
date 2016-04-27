@@ -51,16 +51,18 @@ void ClientHandler::OnBeforeClose(CefRefPtr<CefBrowser> browser) {
     }
 }
 
-void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser,
-                              CefRefPtr<CefFrame> frame,
-                              int httpStatusCode) {
+void ClientHandler::OnLoadEnd(
+    CefRefPtr<CefBrowser> browser,
+    CefRefPtr<CefFrame> frame,
+    int httpStatusCode
+) {
     CEF_REQUIRE_UI_THREAD();
 
     if (frame->IsMain()) {
-        frame->ExecuteJavaScript("window.blue = 12345;", frame->GetURL(),0);
+        frame->ExecuteJavaScript("window.blue = 12345;", frame->GetURL(), 0);
         std::cout << "Status Code: " << httpStatusCode << std::endl;
-//        frame->GetSource(
-//            new AsyncString());
+        //        frame->GetSource(
+        //            new AsyncString());
     }
 }
 

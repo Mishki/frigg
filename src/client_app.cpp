@@ -12,7 +12,7 @@ void ClientApp::OnContextInitialized() {
 
     CefWindowInfo window_info;
     window_info.SetAsChild(0, CefRect(0, 0, 1280, 800));  // TODO REMOVE
-//    window_info.SetAsWindowless(0, true);  // TODO UNCOMMENT
+    //    window_info.SetAsWindowless(0, true);  // TODO UNCOMMENT
     CefBrowserSettings browser_settings;
     CefRefPtr<ClientHandler> client_handler(new ClientHandler());
 
@@ -23,11 +23,21 @@ void ClientApp::OnContextInitialized() {
         browser_settings,
         NULL
     );
+
+    CefBrowserHost::CreateBrowser(
+        window_info,
+        client_handler.get(),
+        "http://www.omgubuntu.co.uk/",
+        browser_settings,
+        NULL
+    );
 }
 
-//void ClientApp::OnContextCreated(CefRefPtr<CefBrowser> browser,
-//                                 CefRefPtr<CefFrame> frame,
-//                                 CefRefPtr<CefV8Context> context) {
+//void ClientApp::OnContextCreated(
+//    CefRefPtr<CefBrowser> browser,
+//    CefRefPtr<CefFrame> frame,
+//    CefRefPtr<CefV8Context> context
+//) {
 //
 //    CEF_REQUIRE_RENDERER_THREAD();
 //    CefRefPtr<CefV8Value> globe = context->GetGlobal();

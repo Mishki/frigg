@@ -14,8 +14,11 @@ public:
     Frigga(int argc, char *argv[]);
     ~Frigga();
 
+    void open_url(const char *url);
+
 private:
     void run(int argc, char **argv);
+
     std::thread _thread;
 };
 

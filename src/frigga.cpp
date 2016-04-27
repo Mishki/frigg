@@ -3,8 +3,6 @@
 
 #include <X11/Xlib.h>
 #include <iostream>
-#include <thread>
-#include <exception>
 #include "include/base/cef_logging.h"
 
 // TODO REMOVE
@@ -27,8 +25,6 @@ namespace {
 
 }
 
-//guarded_thread th;
-
 Frigga::Frigga(int argc, char *argv[]) {
     _thread = std::thread (&Frigga::run, this, argc, argv);
 }
@@ -40,11 +36,6 @@ Frigga::~Frigga() {
 }
 
 void Frigga::run(int argc, char *argv[]) {
-    printf("%d\n", argc);
-    for (int i = 0; i < argc; i++) {
-        printf("%s\n", argv[i]);
-    }
-
     CefMainArgs main_args(argc, argv);
     CefRefPtr<ClientApp> app(new ClientApp);
 
@@ -60,6 +51,9 @@ void Frigga::run(int argc, char *argv[]) {
 
     CefRunMessageLoop();
     CefShutdown();
-
-    std::cout << "haza" << std::endl;
 }
+
+void Frigga::open_url(const char *url) {
+    printf("%s\n", url);
+}
+
