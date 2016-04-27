@@ -68,8 +68,7 @@ void ClientHandler::OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame>
     CEF_REQUIRE_UI_THREAD();
 
     if (frame->IsMain()) {
-        frame->ExecuteJavaScript("function(window.myval) { return window.myval; }
-        document.body.innerHTML = window.myval;", frame->GetURL(), 0);
+        frame->ExecuteJavaScript("document.body.innerHTML = window.myglobalval;", frame->GetURL(), 0);
 
         std::cout << "Status Code: " << httpStatusCode << std::endl;
         frame->GetSource(new AsyncString()); //Ajax request, to wait for code once requested
