@@ -24,15 +24,18 @@ public:
                      const CefRefPtr<CefV8Value> object,
                      const CefRefPtr<CefV8Value> value,
                      CefString& exception) OVERRIDE {
+        CefV8Value *valueCopy = value.get();
         if (name == "myval") {
-            if (value.IsString()) {
+            if (valueCopy->IsString()) {
                 // Store the value.
-                myval_ = value.GetStringValue();
+                myval_ = valueCopy->GetStringValue();
             } else {
                 // Throw an exception.
                 exception = "Invalid value type";
             }
             return true;
+        }
+
         }
 
         // Value does not exist.
