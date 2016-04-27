@@ -8,6 +8,7 @@ endif ()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(FRIGGA_SOURCE_FILES
     src/frigga.cpp
+    src/frigga.h
     src/client_app.cpp
     src/client_app.h
     src/client_handler.cpp
@@ -18,21 +19,16 @@ set(FRIGGA_SOURCE_FILES
     src/ClientV8ExtensionHandler.cpp
     src/MyV8Accessor.h)
 
-set(FRIGGA_HELLO_WORLD_SOURCE_FILES
-    samples/hello_world.cpp
-    samples/hello_world.h)
-
 add_subdirectory(libcef3)
 include_directories(libcef3)
+include_directories(src)
 
 ## libcef3 library paths.
 set(LIBCEF_LIBS_DIR libcef3/binary)
 set(LIBCEF_RSRCS_DIR libcef3/resources)
 set(LIBCEF_LIB ${CMAKE_CURRENT_SOURCE_DIR}/${LIBCEF_LIBS_DIR}/libcef.so)
 
-add_executable(hello_world ${FRIGGA_HELLO_WORLD_SOURCE_FILES})
-
-add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGGA_SOURCE_FILES})
+add_library(${CMAKE_PROJECT_NAME} ${FRIGGA_SOURCE_FILES})
 add_dependencies(${CMAKE_PROJECT_NAME} libcef_dll_wrapper)
 target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} libcef_dll_wrapper X11)
 
@@ -41,9 +37,14 @@ if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
     set_target_properties(
         ${CMAKE_PROJECT_NAME}
         PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY
+        LIBRARY_OUTPUT_DIRECTORY
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif ()
+
+add_executable(hello_world samples/hello_world.cpp)
+MESSAGE(WARNING ${CMAKE_PROJECT_NAME})
+add_dependencies(hello_world ${CMAKE_PROJECT_NAME})
+target_link_libraries(hello_world ${CMAKE_PROJECT_NAME})
 
 file(GLOB LIBCEF_LIBS_COPY ${LIBCEF_LIBS_DIR}/*)
 add_custom_command(

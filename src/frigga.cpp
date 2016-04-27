@@ -1,5 +1,8 @@
+#include "frigga.h"
 #include "client_app.h"
+
 #include <X11/Xlib.h>
+#include <iostream>
 #include "include/base/cef_logging.h"
 
 // TODO REMOVE
@@ -22,30 +25,32 @@ namespace {
 
 }
 
-int main(int argc, char *argv[]) {
+//guarded_thread th;
+
+Frigga::Frigga() {}
+Frigga::~Frigga() {}
+
+int Frigga::init(int argc, char *argv[]) {
     CefMainArgs main_args(argc, argv);
     CefRefPtr<ClientApp> app(new ClientApp);
 
-    int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
-    if (exit_code >= 0) {
-        return exit_code;
-    }
+    //    int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
+    //    if (exit_code >= 0) {
+    //        return;
+    //    }
 
     // TODO REMOVE
     XSetErrorHandler(XErrorHandlerImpl);
     XSetIOErrorHandler(XIOErrorHandlerImpl);
 
     CefSettings settings;
+
     settings.remote_debugging_port = 8888;  // TODO REMOVE
     CefInitialize(main_args, settings, app.get(), NULL);
 
-    //Simplest way to execute JS from a client application
-    //    CefRefPtr<CefBrowser> browser;
-    //    CefRefPtr<CefFrame> frame = browser ->GetMainFrame();
-    //    frame -> ExecuteJavaScript("alert('ExecuteJavascript Works!!');",
-    //            frame -> GetURL(), 0);
-
     CefRunMessageLoop();
     CefShutdown();
+
+    std::cout << "haza" << std::endl;
     return 0;
 }
