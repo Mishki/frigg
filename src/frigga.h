@@ -13,7 +13,10 @@ class Frigga {
 public:
     Frigga(int argc, char *argv[]);
     ~Frigga();
-    void start(int argc, char **argv);
+
+private:
+    void run(int argc, char **argv);
+    std::thread _thread;
 };
 
 #endif //FRIGGA_FRIGGA_H

@@ -30,13 +30,21 @@ namespace {
 //guarded_thread th;
 
 Frigga::Frigga(int argc, char *argv[]) {
-    std::thread t1(&Frigga::start, this, argc, argv);
-    t1.join();
+    _thread = std::thread (&Frigga::run, this, argc, argv);
 }
 
-Frigga::~Frigga() {}
+Frigga::~Frigga() {
+    if (_thread.joinable()) {
+        _thread.join();
+    }
+}
 
-void Frigga::start(int argc, char *argv[]) {
+void Frigga::run(int argc, char *argv[]) {
+    printf("%d\n", argc);
+    for (int i = 0; i < argc; i++) {
+        printf("%s\n", argv[i]);
+    }
+
     CefMainArgs main_args(argc, argv);
     CefRefPtr<ClientApp> app(new ClientApp);
 
