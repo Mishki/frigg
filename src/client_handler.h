@@ -1,5 +1,5 @@
-#ifndef LIBFRIGGA_CLIENT_HANDLER_H_
-#define LIBFRIGGA_CLIENT_HANDLER_H_
+#ifndef FRIGGA_CLIENT_HANDLER_H
+#define FRIGGA_CLIENT_HANDLER_H
 
 
 #include "include/cef_render_process_handler.h"
@@ -12,53 +12,50 @@
 #define RENDER_WIDTH 1920
 #define RENDER_HEIGHT 1080
 
-class ClientHandler : public CefClient, //gives access to root of diff handlers that can be attached
-                      public CefLifeSpanHandler, //events having to do with lifespan of "window"
-                      public CefLoadHandler, //events when the physical window frames load
-                      public CefRenderHandler { //deals with rendering (need it for windowless state)
-    public:
+class ClientHandler : public CefClient,
+                      public CefLifeSpanHandler,
+                      public CefLoadHandler {
+//                      public CefLoadHandler,
+//                      public CefRenderHandler {
+public:
     ClientHandler();
     ~ClientHandler();
 
-    CefRefPtr<CefBrowser> GetBrowser()
-    {
-        return m_Browser;
-    }
+    CefRefPtr<CefBrowser> GetBrowser() {return m_Browser;}
 
-    CefWindowHandle GetBrowserHwnd()
-    {
-        return m_BrowserHwnd;
-    }
+    CefWindowHandle GetBrowserHwnd() {return m_BrowserHwnd;}
 
     // CefClient methods
     virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE {return this;}
     virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE {return this;}
-    virtual CefRefPtr<CefRenderHandler> GetRenderHandler() OVERRIDE {return this;}
+//    virtual CefRefPtr<CefRenderHandler> GetRenderHandler() OVERRIDE {return this;}
 
     // CefLifeSpanHandler methods
-    //What happens with the actual windows that are opened
     virtual void OnAfterCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
     virtual bool DoClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
     virtual void OnBeforeClose(CefRefPtr<CefBrowser> browser) OVERRIDE;
 
     // CefLoadHandler methods
-    //when loading ends for a page (eg: getting html for a page)
-    virtual void OnLoadEnd(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, int httpStatusCode) OVERRIDE;
+    virtual void OnLoadEnd(CefRefPtr<CefBrowser> browser,
+                           CefRefPtr<CefFrame> frame,
+                           int httpStatusCode) OVERRIDE;
 
-    // CefRenderHandler methods
-    virtual bool GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) OVERRIDE;
-    virtual void OnPaint(CefRefPtr<CefBrowser> browser, CefRenderHandler::PaintElementType type, const CefRenderHandler::RectList &dirtyRects, const void *buffer, int width, int height) OVERRIDE;
+//    // CefRenderHandler methods
+//    virtual bool GetViewRect(CefRefPtr<CefBrowser> browser,
+//                             CefRect &rect) OVERRIDE;
+//    virtual void OnPaint(CefRefPtr<CefBrowser> browser,
+//                         CefRenderHandler::PaintElementType type,
+//                         const CefRenderHandler::RectList &dirtyRects,
+//                         const void *buffer, int width, int height) OVERRIDE;
 
-    protected:
-    typedef std::list<CefRefPtr<CefBrowser>> BrowserList; //List of handlers to gives access to all diff components of a web page
-    BrowserList browser_list_;
-    // The child browser window
+protected:
+    typedef std::list<CefRefPtr<CefBrowser>> BrowserList;
+    BrowserList browser_list;
     CefRefPtr<CefBrowser> m_Browser;
 
-    // The child browser window handle
     CefWindowHandle m_BrowserHwnd;
 
-    IMPLEMENT_REFCOUNTING(ClientHandler);
+IMPLEMENT_REFCOUNTING(ClientHandler);
 };
 
-#endif  // LIBFRIGGA_CLIENT_HANDLER_H_
+#endif  // FRIGGA_CLIENT_HANDLER_H

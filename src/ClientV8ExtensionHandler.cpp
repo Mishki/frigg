@@ -1,6 +1,3 @@
-//
-// Created by sania on 4/14/16.
-//
 #include "ClientV8ExtensionHandler.h"
 
 ClientV8ExtensionHandler::ClientV8ExtensionHandler(CefRefPtr<CefApp> app)

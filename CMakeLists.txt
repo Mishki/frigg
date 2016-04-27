@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
-project(libfrigga)
+project(frigga)
 
-if(NOT CMAKE_BUILD_TYPE)
+if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
-endif()
+endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-set(LIBFRIGGA_SOURCE_FILES
+set(FRIGGA_SOURCE_FILES
     src/frigga.cpp
     src/client_app.cpp
     src/client_app.h
@@ -15,42 +15,63 @@ set(LIBFRIGGA_SOURCE_FILES
     src/async_string.cpp
     src/async_string.h
     src/ClientV8ExtensionHandler.h
-    src/ClientV8ExtensionHandler.cpp src/MyV8Accessor.h)
+    src/ClientV8ExtensionHandler.cpp
+    src/MyV8Accessor.h)
+
+set(FRIGGA_HELLO_WORLD_SOURCE_FILES
+    samples/hello_world.cpp
+    samples/hello_world.h)
 
 add_subdirectory(libcef3)
 include_directories(libcef3)
 
 ## libcef3 library paths.
-set(LIBCEF_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libcef3)
-set(LIBCEF_RSRCS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libcef3/resources)
-set(LIBCEF_LIBS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libcef3/binary)
-set(LIBCEF_LIB ${LIBCEF_LIBS_DIR}/libcef.so)
+set(LIBCEF_LIBS_DIR libcef3/binary)
+set(LIBCEF_RSRCS_DIR libcef3/resources)
+set(LIBCEF_LIB ${CMAKE_CURRENT_SOURCE_DIR}/${LIBCEF_LIBS_DIR}/libcef.so)
 
-#need to change to library executable has main entry point
-add_executable(${CMAKE_PROJECT_NAME} ${LIBFRIGGA_SOURCE_FILES})
+add_executable(hello_world ${FRIGGA_HELLO_WORLD_SOURCE_FILES})
+
+add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGGA_SOURCE_FILES})
 add_dependencies(${CMAKE_PROJECT_NAME} libcef_dll_wrapper)
-target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} libcef_dll_wrapper)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} libcef_dll_wrapper X11)
 
-#set_target_properties(
-#    ${CMAKE_PROJECT_NAME}
-#    PROPERTIES
-#    RUNTIME_OUTPUT_DIRECTORY
-#    ${CMAKE_SOURCE_DIR}/build/${CMAKE_PROJECT_NAME}/${CMAKE_BUILD_TYPE})
+if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE})
+    set_target_properties(
+        ${CMAKE_PROJECT_NAME}
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif ()
 
-#set_target_properties(
-#    libcef_dll_wrapper
-#    PROPERTIES
-#    RUNTIME_OUTPUT_DIRECTORY
-#    ${CMAKE_SOURCE_DIR}/build/libcef_dll_wrapper/${CMAKE_BUILD_TYPE})
+file(GLOB LIBCEF_LIBS_COPY ${LIBCEF_LIBS_DIR}/*)
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${LIBCEF_LIBS_COPY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-#add_custom_command(
-#        TARGET fricka PRE_BUILD
-#        COMMAND ${CMAKE_COMMAND} -E copy_directory
-#        ${LIBCEF_RSRCS_DIR} $<TARGET_FILE_DIR:fricka>)
+file(GLOB LIBCEF_RSRCS_COPY ${LIBCEF_RSRCS_DIR}/*)
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${LIBCEF_RSRCS_COPY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-#add_custom_command(
-#    TARGET fricka PRE_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy
-#    ${LIBCEF_LIBS_DIR}/libcef.so $<TARGET_FILE_DIR:fricka>)
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/locales)
+file(GLOB LIBCEF_LOCALES_COPY ${LIBCEF_RSRCS_DIR}/locales/*)
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${LIBCEF_LOCALES_COPY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/locales)
+
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E remove
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/libcef_dll_wrapper.a)
 
 INSTALL(TARGETS ${CMAKE_PROJECT_NAME} DESTINATION .)
+
+

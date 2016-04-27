@@ -1,5 +1,5 @@
-#ifndef LIBFRIGGA_ASYNC_STRING_H
-#define LIBFRIGGA_ASYNC_STRING_H
+#ifndef FRIGGA_ASYNC_STRING_H
+#define FRIGGA_ASYNC_STRING_H
 
 #include "include/cef_client.h"
 
@@ -13,4 +13,4 @@ class AsyncString : public CefStringVisitor {
 };
 
 
-#endif //LIBFRIGGA_ASYNC_STRING_H
+#endif // FRIGGA_ASYNC_STRING_H

@@ -1,29 +1,51 @@
 #include "client_app.h"
+#include <X11/Xlib.h>
+#include "include/base/cef_logging.h"
 
-//browser process entry point
+// TODO REMOVE
+namespace {
+
+    int XErrorHandlerImpl(Display *display, XErrorEvent *event) {
+        LOG(WARNING)
+        << "X error received: "
+        << "type " << event->type << ", "
+        << "serial " << event->serial << ", "
+        << "error_code " << static_cast<int>(event->error_code) << ", "
+        << "request_code " << static_cast<int>(event->request_code) << ", "
+        << "minor_code " << static_cast<int>(event->minor_code);
+        return 0;
+    }
+
+    int XIOErrorHandlerImpl(Display *display) {
+        return 0;
+    }
+
+}
+
 int main(int argc, char *argv[]) {
     CefMainArgs main_args(argc, argv);
-    CefRefPtr <ClientApp> app(new ClientApp); //unique ref ptr created by cef, CLientApp is our class that we have over-written
-    //Creating app that is a shared ptr of ClientApp. It handles process level callbacks
+    CefRefPtr<ClientApp> app(new ClientApp);
 
     int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
     if (exit_code >= 0) {
         return exit_code;
-    } //chrome has multiple threads (eg rendering, js processing)- this is for that
+    }
+
+    // TODO REMOVE
+    XSetErrorHandler(XErrorHandlerImpl);
+    XSetIOErrorHandler(XIOErrorHandlerImpl);
 
     CefSettings settings;
-    //Initializing cef
-    CefInitialize(main_args, settings, app.get(), NULL); //spawns browser threads and properties
-    //shared space for communication between threads
+    settings.remote_debugging_port = 8888;  // TODO REMOVE
+    CefInitialize(main_args, settings, app.get(), NULL);
 
     //Simplest way to execute JS from a client application
-//    CefRefPtr<CefBrowser> browser;
-//    CefRefPtr<CefFrame> frame = browser ->GetMainFrame();
-//    frame -> ExecuteJavaScript("alert('ExecuteJavascript Works!!');",
-//            frame -> GetURL(), 0);
+    //    CefRefPtr<CefBrowser> browser;
+    //    CefRefPtr<CefFrame> frame = browser ->GetMainFrame();
+    //    frame -> ExecuteJavaScript("alert('ExecuteJavascript Works!!');",
+    //            frame -> GetURL(), 0);
 
-    //Running cef message loop
-    CefRunMessageLoop(); //Blocking loop goes thru msg queue and figures out who the message is for, and the thread will execute whatever
-    CefShutdown(); //termination msg to all threads to stop
+    CefRunMessageLoop();
+    CefShutdown();
     return 0;
 }

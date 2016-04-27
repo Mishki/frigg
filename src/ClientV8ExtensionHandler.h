@@ -1,11 +1,5 @@
-//
-// Created by sania on 4/14/16.
-//
-
-#ifndef LIBFRIGGA_CLIENTV8EXTENSIONHANDLER_H
-#define LIBFRIGGA_CLIENTV8EXTENSIONHANDLER_H
-//#ifndef __CEF3SimpleSample__ClientV8ExtensionHandler__
-//#define __CEF3SimpleSample__ClientV8ExtensionHandler__
+#ifndef FRIGGA_CLIENTV8EXTENSIONHANDLER_H
+#define FRIGGA_CLIENTV8EXTENSIONHANDLER_H
 
 
 #include "include/cef_app.h"
@@ -21,7 +15,4 @@ private:
 IMPLEMENT_REFCOUNTING(ClientV8ExtensionHandler);
 };
 
-#endif //LIBFRIGGA_CLIENTV8EXTENSIONHANDLER_H
-
-
-//#endif /* defined(__CEF3SimpleSample__ClientV8ExtensionHandler__) */
+#endif // FRIGGA_CLIENTV8EXTENSIONHANDLER_H
