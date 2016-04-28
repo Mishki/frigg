@@ -11,8 +11,9 @@ ClientApp::ClientApp(FriggBrowser *frigg) {
 
 void ClientApp::OnContextInitialized() {
     CEF_REQUIRE_UI_THREAD();
-
-    this->frigg->initializer();
+    std::unique_lock<std::mutex> lck(this->frigg->_mtx);
+    this->frigg->browser_init = true;
+    this->frigg->_cv.notify_all();
 }
 
 //void ClientApp::OnContextCreated(

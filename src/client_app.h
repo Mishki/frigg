@@ -2,12 +2,11 @@
 #define FRIGG_CLIENT_APP_H
 
 #include "include/cef_app.h"
-#include "frigg.h"
+#include "frigg_browser.h"
 
 class ClientApp : public CefApp,
                   public CefBrowserProcessHandler,
                   public CefRenderProcessHandler {
-
 public:
     ClientApp(FriggBrowser *frigg = NULL);
 

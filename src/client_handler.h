@@ -21,10 +21,6 @@ public:
     ClientHandler();
     ~ClientHandler();
 
-    CefRefPtr<CefBrowser> GetBrowser() {return m_Browser;}
-
-    CefWindowHandle GetBrowserHwnd() {return m_BrowserHwnd;}
-
     // CefClient methods
     virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE {return this;}
     virtual CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE {return this;}
@@ -53,9 +49,6 @@ public:
 protected:
     typedef std::list<CefRefPtr<CefBrowser>> BrowserList;
     BrowserList browser_list;
-    CefRefPtr<CefBrowser> m_Browser;
-
-    CefWindowHandle m_BrowserHwnd;
 
 IMPLEMENT_REFCOUNTING(ClientHandler);
 };

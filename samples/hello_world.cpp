@@ -1,6 +1,6 @@
 #include <iostream>
-#include <chrono>
-#include "frigg.h"
+#include "frigg_browser.h"
+#include "frigg_web_page.h"
 
 int main(int argc, char *argv[]) {
     printf("Sample program started.\n");
@@ -10,7 +10,8 @@ int main(int argc, char *argv[]) {
     browser.openUrl("https://www.google.com/");
     browser.openUrl("http://www.omgubuntu.co.uk/");
 
-    //    WebPage wp = foreman.open("https://www.google.com");
+//    FriggWebPage wp = browser.openUrl("https://www.google.com/");
+//    FriggWebPage wp = browser.openUrl("http://www.omgubuntu.co.uk/");
 
 
     return 0;

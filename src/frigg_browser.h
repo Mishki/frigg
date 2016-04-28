@@ -1,6 +1,8 @@
 #ifndef FRIGG_FRIGG_H
 #define FRIGG_FRIGG_H
 
+#include "frigg_web_page.h"
+#include "client_handler.h"
 #include <include/cef_base.h>
 #include <condition_variable>
 #include <thread>
@@ -13,12 +15,12 @@
 //};
 
 class FriggBrowser {
+    friend class ClientApp;
 public:
     FriggBrowser(int argc, char *argv[]);
     ~FriggBrowser();
 
-    void initializer();
-    void openUrl(const char *url);
+    FriggWebPage openUrl(const char *url);
 
 private:
     void run(int argc, char **argv);
@@ -26,7 +28,12 @@ private:
     std::thread _thrd;
     std::mutex _mtx;
     std::condition_variable _cv;
-    bool initialized = false;
+    bool browser_init = false;
+
+    CefWindowInfo window_info;
+    CefBrowserSettings browser_settings;
+    CefRefPtr<ClientHandler> client_handler;
+
 };
 
 #endif //FRIGG_FRIGG_H

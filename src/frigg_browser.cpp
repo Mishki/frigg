@@ -1,4 +1,5 @@
-#include "frigg.h"
+#include "frigg_browser.h"
+#include "frigg_web_page.h"
 #include "client_app.h"
 #include "client_handler.h"
 #include "include/base/cef_bind.h"
@@ -30,9 +31,13 @@ namespace {
 FriggBrowser::FriggBrowser(int argc, char *argv[]) {
     _thrd = std::thread(&FriggBrowser::run, this, argc, argv);
     std::unique_lock<std::mutex> lck(_mtx);
-    while (!initialized) {
+    while (!browser_init) {
         _cv.wait(lck);
     }
+
+    window_info.SetAsChild(0, CefRect(0, 0, 1280, 800));  // TODO REMOVE
+    //    window_info.SetAsWindowless(0, true);  // TODO UNCOMMENT
+    client_handler = new ClientHandler();
 }
 
 FriggBrowser::~FriggBrowser() {
@@ -60,46 +65,13 @@ void FriggBrowser::run(int argc, char *argv[]) {
     CefShutdown();
 }
 
-class MyTask : public virtual CefTask {
-public:
-    MyTask() {}
-    virtual void Execute() OVERRIDE {
-        CefWindowInfo window_info;
-        window_info.SetAsChild(0, CefRect(0, 0, 1280, 800));  // TODO REMOVE
-        //    window_info.SetAsWindowless(0, true);  // TODO UNCOMMENT
-        CefBrowserSettings browser_settings;
-        CefRefPtr<ClientHandler> client_handler(new ClientHandler());
-
-        CefBrowserHost::CreateBrowser(
-            window_info,
-            client_handler.get(),
-            "http://www.google.com",
-            browser_settings,
-            NULL
-        );
-    }
-
-IMPLEMENT_REFCOUNTING(MyTask);
-};
-
-void FriggBrowser::openUrl(const char *url) {
-    printf("%s\n", url);
-
-
-    //    base::Bind(&MyFunc, 23, "hello world");
-
-    CefPostTask(TID_UI, new MyTask());
+FriggWebPage FriggBrowser::openUrl(const char *url) {
+    CefBrowserHost::CreateBrowser(
+        window_info,
+        client_handler.get(),
+        url,
+        browser_settings,
+        NULL
+    );
 
 }
-
-void FriggBrowser::initializer() {
-    std::unique_lock<std::mutex> lck(_mtx);
-    initialized = true;
-    _cv.notify_all();
-}
-
-
-
-
-
-

@@ -10,7 +10,7 @@ namespace {
 }
 
 ClientHandler::ClientHandler() {
-//    DCHECK(!g_instance);
+    DCHECK(!g_instance);
     g_instance = this;
 }
 
@@ -20,18 +20,13 @@ ClientHandler::~ClientHandler() {
 
 void ClientHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
-
-    if (!m_Browser.get()) {
-        m_Browser = browser;
-        m_BrowserHwnd = browser->GetHost()->GetWindowHandle();
-    }
-
     browser_list.push_back(browser);
+
+    printf("size: %d\n", (int) browser_list.size());
 }
 
 bool ClientHandler::DoClose(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
-
     return false;
 }
 
