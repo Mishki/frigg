@@ -3,8 +3,13 @@
 
 class FriggWebPage {
 public:
-    FriggWebPage();
+    FriggWebPage(int val);
     ~FriggWebPage();
+
+    int getVal();
+
+private:
+    int blue = 1;
 };
 
 #endif // FRIGG_WEB_PAGE_H

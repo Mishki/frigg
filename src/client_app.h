@@ -21,7 +21,7 @@ public:
     //    ) OVERRIDE;
 
 private:
-    FriggBrowser *frigg = NULL;
+    FriggBrowser *frigg;
 
 IMPLEMENT_REFCOUNTING(ClientApp);
 };

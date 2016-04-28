@@ -16,6 +16,7 @@
 
 class FriggBrowser {
     friend class ClientApp;
+    friend class CreateBrowserTask;
 public:
     FriggBrowser(int argc, char *argv[]);
     ~FriggBrowser();

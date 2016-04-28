@@ -3,6 +3,7 @@
 #include "async_string.h"
 #include "include/cef_app.h"
 #include "include/wrapper/cef_helpers.h"
+#include "include/base/cef_logging.h"
 
 
 namespace {
@@ -21,8 +22,6 @@ ClientHandler::~ClientHandler() {
 void ClientHandler::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
     CEF_REQUIRE_UI_THREAD();
     browser_list.push_back(browser);
-
-    printf("size: %d\n", (int) browser_list.size());
 }
 
 bool ClientHandler::DoClose(CefRefPtr<CefBrowser> browser) {

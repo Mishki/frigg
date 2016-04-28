@@ -1,12 +1,10 @@
 #include "frigg_browser.h"
-#include "frigg_web_page.h"
 #include "client_app.h"
-#include "client_handler.h"
+#include "frigg_create_browser_task.h"
 #include "include/base/cef_bind.h"
 
 #include <X11/Xlib.h>
 #include <iostream>
-#include "include/base/cef_logging.h"
 
 // TODO REMOVE
 namespace {
@@ -66,12 +64,9 @@ void FriggBrowser::run(int argc, char *argv[]) {
 }
 
 FriggWebPage FriggBrowser::openUrl(const char *url) {
-    CefBrowserHost::CreateBrowser(
-        window_info,
-        client_handler.get(),
-        url,
-        browser_settings,
-        NULL
-    );
+    uuid_t uuid = {0};
+    uuid_generate(uuid);
 
+    CefPostTask(TID_UI, new CreateBrowserTask(this, url, uuid));
+    return FriggWebPage(777);
 }

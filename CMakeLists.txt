@@ -10,6 +10,10 @@ set(FRIGGA_SOURCE_FILES
     src/frigg_helper.cpp
     src/frigg_browser.cpp
     src/frigg_browser.h
+    src/frigg_web_page.cpp
+    src/frigg_web_page.h
+    src/frigg_create_browser_task.cpp
+    src/frigg_create_browser_task.h
     src/client_app.cpp
     src/client_app.h
     src/client_handler.cpp
@@ -20,7 +24,7 @@ set(FRIGGA_SOURCE_FILES
     src/ClientV8ExtensionHandler.cpp
     src/MyV8Accessor.h)
 
-set(FRIGGA_SUPPORT_LIBS libcef_dll_wrapper pthread X11)
+set(FRIGGA_SUPPORT_LIBS libcef_dll_wrapper pthread uuid X11)
 
 add_subdirectory(libcef3)
 include_directories(libcef3)
@@ -31,7 +35,7 @@ set(LIBCEF_LIBS_DIR libcef3/binary)
 set(LIBCEF_RSRCS_DIR libcef3/resources)
 set(LIBCEF_LIB ${CMAKE_CURRENT_SOURCE_DIR}/${LIBCEF_LIBS_DIR}/libcef.so)
 
-add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGGA_SOURCE_FILES} src/frigg_web_page.cpp src/frigg_web_page.h)
+add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGGA_SOURCE_FILES})
 add_dependencies(${CMAKE_PROJECT_NAME} libcef_dll_wrapper)
 target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} ${FRIGGA_SUPPORT_LIBS})
 
