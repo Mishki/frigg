@@ -4,7 +4,6 @@
 #include "include/base/cef_bind.h"
 
 #include <X11/Xlib.h>
-#include <iostream>
 
 // TODO REMOVE
 namespace {
