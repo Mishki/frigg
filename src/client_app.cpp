@@ -5,32 +5,14 @@
 // #include "ClientV8ExtensionHandler.h"
 //#include "MyV8Accessor.h"
 
-ClientApp::ClientApp() {}
+ClientApp::ClientApp(FriggBrowser *frigg) {
+    this->frigg = frigg;
+}
 
 void ClientApp::OnContextInitialized() {
     CEF_REQUIRE_UI_THREAD();
 
-    CefWindowInfo window_info;
-    window_info.SetAsChild(0, CefRect(0, 0, 1280, 800));  // TODO REMOVE
-    //    window_info.SetAsWindowless(0, true);  // TODO UNCOMMENT
-    CefBrowserSettings browser_settings;
-    CefRefPtr<ClientHandler> client_handler(new ClientHandler());
-
-    CefBrowserHost::CreateBrowser(
-        window_info,
-        client_handler.get(),
-        "http://www.google.com",
-        browser_settings,
-        NULL
-    );
-
-    CefBrowserHost::CreateBrowser(
-        window_info,
-        client_handler.get(),
-        "http://www.omgubuntu.co.uk/",
-        browser_settings,
-        NULL
-    );
+    this->frigg->initializer();
 }
 
 //void ClientApp::OnContextCreated(

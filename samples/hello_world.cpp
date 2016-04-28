@@ -1,13 +1,14 @@
 #include <iostream>
-#include "frigga.h"
+#include <chrono>
+#include "frigg.h"
 
 int main(int argc, char *argv[]) {
-    printf("hello world\n");
+    printf("Sample program started.\n");
 
-    Frigga foreman(argc, argv);
+    FriggBrowser browser(argc, argv);
 
-    foreman.open_url("https://www.google.com/");
-    foreman.open_url("http://www.omgubuntu.co.uk/");
+    browser.openUrl("https://www.google.com/");
+    browser.openUrl("http://www.omgubuntu.co.uk/");
 
     //    WebPage wp = foreman.open("https://www.google.com");
 

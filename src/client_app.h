@@ -1,27 +1,30 @@
-#ifndef FRIGGA_CLIENT_APP_H
-#define FRIGGA_CLIENT_APP_H
+#ifndef FRIGG_CLIENT_APP_H
+#define FRIGG_CLIENT_APP_H
 
 #include "include/cef_app.h"
+#include "frigg.h"
 
 class ClientApp : public CefApp,
                   public CefBrowserProcessHandler,
                   public CefRenderProcessHandler {
 
 public:
-    ClientApp();
+    ClientApp(FriggBrowser *frigg = NULL);
 
     virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() OVERRIDE {return this;}
     virtual CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() OVERRIDE {return this;}
 
     virtual void OnContextInitialized() OVERRIDE;
-//    virtual void OnContextCreated(
-//        CefRefPtr<CefBrowser> browser,
-//        CefRefPtr<CefFrame> frame,
-//        CefRefPtr<CefV8Context> context
-//    ) OVERRIDE;
+    //    virtual void OnContextCreated(
+    //        CefRefPtr<CefBrowser> browser,
+    //        CefRefPtr<CefFrame> frame,
+    //        CefRefPtr<CefV8Context> context
+    //    ) OVERRIDE;
 
 private:
+    FriggBrowser *frigg = NULL;
+
 IMPLEMENT_REFCOUNTING(ClientApp);
 };
 
-#endif  // FRIGGA_CLIENT_APP_H
+#endif  // FRIGG_CLIENT_APP_H

@@ -1,5 +1,5 @@
-#ifndef FRIGGA_CLIENT_HANDLER_H
-#define FRIGGA_CLIENT_HANDLER_H
+#ifndef FRIGG_CLIENT_HANDLER_H
+#define FRIGG_CLIENT_HANDLER_H
 
 
 #include "include/cef_render_process_handler.h"
@@ -60,4 +60,4 @@ protected:
 IMPLEMENT_REFCOUNTING(ClientHandler);
 };
 
-#endif  // FRIGGA_CLIENT_HANDLER_H
+#endif  // FRIGG_CLIENT_HANDLER_H

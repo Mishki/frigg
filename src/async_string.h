@@ -1,16 +1,16 @@
-#ifndef FRIGGA_ASYNC_STRING_H
-#define FRIGGA_ASYNC_STRING_H
+#ifndef FRIGG_ASYNC_STRING_H
+#define FRIGG_ASYNC_STRING_H
 
 #include "include/cef_client.h"
 
 class AsyncString : public CefStringVisitor {
 
     public:
-    AsyncString();
+    AsyncString() {}
     virtual void Visit(const CefString& string) OVERRIDE;
 
     IMPLEMENT_REFCOUNTING(AsyncString);
 };
 
 
-#endif // FRIGGA_ASYNC_STRING_H
+#endif // FRIGG_ASYNC_STRING_H

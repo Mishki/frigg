@@ -10,7 +10,7 @@ namespace {
 }
 
 ClientHandler::ClientHandler() {
-    DCHECK(!g_instance);
+//    DCHECK(!g_instance);
     g_instance = this;
 }
 
@@ -61,8 +61,7 @@ void ClientHandler::OnLoadEnd(
     if (frame->IsMain()) {
         frame->ExecuteJavaScript("window.blue = 12345;", frame->GetURL(), 0);
         std::cout << "Status Code: " << httpStatusCode << std::endl;
-        //        frame->GetSource(
-        //            new AsyncString());
+//        frame->GetSource(new AsyncString());
     }
 }
 

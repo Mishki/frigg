@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(frigga)
+project(frigg)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
@@ -7,9 +7,9 @@ endif ()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(FRIGGA_SOURCE_FILES
-    src/frigga_helper.cpp
-    src/frigga.cpp
-    src/frigga.h
+    src/frigg_helper.cpp
+    src/frigg.cpp
+    src/frigg.h
     src/client_app.cpp
     src/client_app.h
     src/client_handler.cpp
@@ -55,7 +55,7 @@ endif ()
 
 add_executable(hello_world samples/hello_world.cpp)
 add_dependencies(hello_world ${CMAKE_PROJECT_NAME})
-target_link_libraries(hello_world ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/libfrigga.so)
+target_link_libraries(hello_world ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/libfrigg.so)
 
 file(GLOB LIBCEF_LIBS_COPY ${LIBCEF_LIBS_DIR}/*)
 add_custom_command(
