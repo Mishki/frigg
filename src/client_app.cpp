@@ -1,7 +1,4 @@
-#include <iostream>
 #include "client_app.h"
-#include "client_handler.h"
-#include "include/wrapper/cef_helpers.h"
 // #include "ClientV8ExtensionHandler.h"
 //#include "MyV8Accessor.h"
 
@@ -16,6 +13,7 @@ ClientApp::ClientApp(std::string srv_name, std::string cli_name) {
         perror("server.mq_open.cli_mq");
     }
 
+    ready = event.get_future();
     thrd = std::thread(&ClientApp::mqComm, this);
 }
 
@@ -64,13 +62,21 @@ void ClientApp::mqComm() {
         unsigned int prio;
         if (mq_receive(srv_mq, &buf[0], MSG_SIZE, &prio) != -1) {
             request *req = (request *) buf;
+            std::vector<std::string> args = unparse(req->args);
+
             switch (req->method) {
                 case QUIT:
                     CefPostTask(TID_UI, new QuitTask());
                     goto terminate;
 
                 case SESSION:
-//                    CefPostTask(TID_UI, new SessionTask());
+                    CefPostTask(TID_UI, new SessionTask(
+                        &handles, req->uid, cli_mq, args[0]
+                    ));
+                    break;
+
+                case HTML:
+                    fprintf(stderr, "HTML\n");
                     break;
 
                 default:

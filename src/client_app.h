@@ -2,13 +2,18 @@
 #define FRIGG_CLIENT_APP_H
 
 #include "include/cef_app.h"
+#include "include/wrapper/cef_helpers.h"
 #include "frigg.h"
 #include "tasks.h"
+#include "request.h"
+#include "client_handle.h"
 #include <future>
 
 class ClientApp : public CefApp,
                   public CefBrowserProcessHandler,
                   public CefRenderProcessHandler {
+    friend class SessionTask;
+
 public:
     ClientApp() {};
     ClientApp(std::string srv_name, std::string cli_name);
@@ -30,7 +35,8 @@ private:
     std::thread thrd;
     mqd_t srv_mq, cli_mq;
     std::promise<bool> event;
-    std::future<bool> ready = event.get_future();
+    std::future<bool> ready;
+    std::map<std::string, CefRefPtr<ClientHandle>> handles;
 
 IMPLEMENT_REFCOUNTING(ClientApp);
 };

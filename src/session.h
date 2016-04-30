@@ -1,18 +1,27 @@
 #ifndef FRIGG_WEB_PAGE_H
 #define FRIGG_WEB_PAGE_H
 
-#include "include/cef_browser.h"
+#include <uuid/uuid.h>
+#include <stdlib.h>
+#include <string>
+#include <future>
+#include <map>
+#include <mqueue.h>
+#include "request.h"
 
 class Session {
 public:
-    Session(int browser_id);
+    Session() {};
+    Session(std::map<std::string, std::promise<long>> *promises, mqd_t srv_mq, int bid);
     ~Session();
 
-    int id();
+    int getBid();
     std::string html();
 
 private:
-    int browser_id;
+    int bid;
+    std::map<std::string, std::promise<long>> *promises;
+    mqd_t srv_mq;
 };
 
 #endif // FRIGG_WEB_PAGE_H

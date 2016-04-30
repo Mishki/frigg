@@ -5,17 +5,21 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif ()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(FRIGG_SOURCE_FILES
     src/helper.cpp
     src/frigg.cpp
     src/frigg.h
     src/session.cpp
     src/session.h
+    src/tasks.cpp
+    src/tasks.h
+    src/request.cpp
+    src/request.h
     src/client_app.cpp
     src/client_app.h
-    src/client_handler.cpp
-    src/client_handler.h
+    src/client_handle.cpp
+    src/client_handle.h
     src/async_string.cpp
     src/async_string.h
     src/ClientV8ExtensionHandler.h
@@ -37,7 +41,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGG_SOURCE_FILES})
 add_dependencies(${CMAKE_PROJECT_NAME} libcef_dll_wrapper)
 target_link_libraries(${CMAKE_PROJECT_NAME} ${LIBCEF_LIB} ${FRIGG_SUPPORT_LIBS})
 
-add_executable(helper ${FRIGG_SOURCE_FILES} src/tasks.h)
+add_executable(helper ${FRIGG_SOURCE_FILES})
 add_dependencies(helper libcef_dll_wrapper)
 target_link_libraries(helper ${LIBCEF_LIB} ${FRIGG_SUPPORT_LIBS})
 

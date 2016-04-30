@@ -8,18 +8,20 @@
 #include "include/cef_browser.h"
 
 #include <list>
+#include <mqueue.h>
 
 #define RENDER_WIDTH 1920
 #define RENDER_HEIGHT 1080
 
-class ClientHandler : public CefClient,
+class ClientHandle : public CefClient,
                       public CefLifeSpanHandler,
                       public CefLoadHandler {
     //                      public CefLoadHandler,
     //                      public CefRenderHandler {
 public:
-    ClientHandler();
-    ~ClientHandler();
+    ClientHandle();
+    ClientHandle(char bid[37], char uid[37], mqd_t cli_mq);
+    ~ClientHandle();
 
     // CefClient methods
     virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE {return this;}
@@ -49,8 +51,11 @@ public:
 protected:
     typedef std::list<CefRefPtr<CefBrowser>> BrowserList;
     BrowserList browser_list;
+    mqd_t cli_mq;
+    char bid[37];
+    char uid[37];
 
-IMPLEMENT_REFCOUNTING(ClientHandler);
+IMPLEMENT_REFCOUNTING(ClientHandle);
 };
 
 #endif  // FRIGG_CLIENT_HANDLER_H

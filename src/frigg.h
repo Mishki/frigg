@@ -7,26 +7,17 @@
 #include <unistd.h>
 #include <libltdl/lt_system.h>
 #include <random>
+#include <future>
 #include <stdlib.h>
-#include <ctime>
 #include "client_app.h"
+#include "request.h"
 #include "session.h"
 
 #include <X11/Xlib.h>
 
-#define MSG_SIZE 8192
-
-#define QUIT        1
-#define SESSION     2
-
-typedef struct request {
-    int method;
-    long shmem;
-//    char args[0];
-} request;
-
 class Browser {
     friend class ClientApp;
+    friend class Session;
 
 public:
     Browser() {};
@@ -35,12 +26,15 @@ public:
 
     Session tab(std::string url);
 
+
 private:
     void mqComm();
 
     pid_t cef_pid;
     std::thread thrd;
     mqd_t srv_mq, cli_mq;
+    std::string srv_name, cli_name;
+    std::map<std::string, std::promise<long>> promises;
 
 };
 
