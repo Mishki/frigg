@@ -13,6 +13,7 @@
 #define QUIT        1
 #define SESSION     2
 #define HTML        3
+#define JS          4
 
 typedef struct request {
     char uid[37];

@@ -36,7 +36,7 @@ private:
     mqd_t srv_mq, cli_mq;
     std::promise<bool> event;
     std::future<bool> ready;
-    std::map<std::string, CefRefPtr<ClientHandle>> handles;
+    std::map<int, CefRefPtr<ClientHandle>> handles;
 
 IMPLEMENT_REFCOUNTING(ClientApp);
 };

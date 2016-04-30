@@ -16,7 +16,7 @@ IMPLEMENT_REFCOUNTING(QuitTask);
 class SessionTask : public virtual CefTask {
 public:
     SessionTask(
-        std::map<std::string, CefRefPtr<ClientHandle>> *handles,
+        std::map<int, CefRefPtr<ClientHandle>> *handles,
         char uid[37],
         mqd_t cli_mq,
         std::string url
@@ -26,9 +26,47 @@ private:
     std::string url;
     mqd_t cli_mq;
     char uid[37];
-    std::map<std::string, CefRefPtr<ClientHandle>> *handles;
+    std::map<int, CefRefPtr<ClientHandle>> *handles;
 
 IMPLEMENT_REFCOUNTING(SessionTask);
+};
+
+class GetHTMLTask : public virtual CefTask {
+public:
+    GetHTMLTask(
+        std::map<int, CefRefPtr<ClientHandle>> *handles,
+        char uid[37],
+        mqd_t cli_mq,
+        int bid
+    );
+    virtual void Execute() OVERRIDE;
+private:
+    int bid;
+    mqd_t cli_mq;
+    char uid[37];
+    std::map<int, CefRefPtr<ClientHandle>> *handles;
+
+IMPLEMENT_REFCOUNTING(GetHTMLTask);
+};
+
+class ExecJSTask : public virtual CefTask {
+public:
+    ExecJSTask(
+        std::map<int, CefRefPtr<ClientHandle>> *handles,
+        char uid[37],
+        mqd_t cli_mq,
+        int bid,
+        std::string code
+    );
+    virtual void Execute() OVERRIDE;
+private:
+    std::string code;
+    int bid;
+    mqd_t cli_mq;
+    char uid[37];
+    std::map<int, CefRefPtr<ClientHandle>> *handles;
+
+IMPLEMENT_REFCOUNTING(ExecJSTask);
 };
 
 #endif // FRIGG_TASKS_H

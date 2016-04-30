@@ -1,6 +1,6 @@
 #include <iostream>
 #include "client_handle.h"
-#include "async_string.h"
+#include "html_visitor.h"
 #include "include/cef_app.h"
 #include "include/wrapper/cef_helpers.h"
 #include "include/base/cef_logging.h"
@@ -16,17 +16,20 @@ ClientHandle::ClientHandle() {
     g_instance = this;
 }
 
-ClientHandle::ClientHandle(char bid[37], char uid[37], mqd_t cli_mq) {
+ClientHandle::ClientHandle(char uid[37], mqd_t cli_mq) {
     DCHECK(!g_instance);
     g_instance = this;
 
     this->cli_mq = cli_mq;
-    memcpy(this->bid, bid, 37);
     memcpy(this->uid, uid, 37);
 }
 
 ClientHandle::~ClientHandle() {
     g_instance = NULL;
+}
+
+CefRefPtr<CefBrowser> ClientHandle::getMainBrowser() {
+    return browser_list.front();
 }
 
 void ClientHandle::OnAfterCreated(CefRefPtr<CefBrowser> browser) {
@@ -65,7 +68,12 @@ void ClientHandle::OnLoadEnd(
     request *req = (request *) buf;
     memcpy(req->uid, this->uid, 37);
     req->method = SESSION;
-    int size = parse(req->args, 2, bid, std::to_string(httpStatusCode).c_str());
+    int bid = browser->GetIdentifier();
+
+    int size = parse(
+        req->args, 2,
+        std::to_string(bid).c_str(),
+        std::to_string(httpStatusCode).c_str());
 
     if (mq_send(cli_mq, buf, sizeof(request) + size, 0) == -1) {
         perror("client.mq_send.srv_mq");
@@ -78,9 +86,6 @@ void ClientHandle::OnLoadEnd(
     //        frame->GetSource(new AsyncString());
     //    }
 }
-
-
-
 
 //bool ClientHandler::GetViewRect(CefRefPtr<CefBrowser> browser, CefRect &rect) {
 //    rect = CefRect(0, 0, RENDER_WIDTH, RENDER_HEIGHT);

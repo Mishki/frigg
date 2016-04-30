@@ -76,7 +76,15 @@ void ClientApp::mqComm() {
                     break;
 
                 case HTML:
-                    fprintf(stderr, "HTML\n");
+                    CefPostTask(TID_UI, new GetHTMLTask(
+                        &handles, req->uid, cli_mq, std::stoi(args[0])
+                    ));
+                    break;
+
+                case JS:
+                    CefPostTask(TID_UI, new ExecJSTask(
+                        &handles, req->uid, cli_mq, std::stoi(args[0]), args[1]
+                    ));
                     break;
 
                 default:

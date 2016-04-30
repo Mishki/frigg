@@ -139,7 +139,12 @@ void Browser::mqComm() {
                     break;
 
                 case HTML:
-                    promises[req->uid].set_value(req->shmem);
+//                    promises[req->uid].set_value(req->shmem);
+                    break;
+
+                case JS:
+                    promises[req->uid].set_value(1);
+                    break;
 
                 default:
                     break;

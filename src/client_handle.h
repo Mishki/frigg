@@ -20,8 +20,10 @@ class ClientHandle : public CefClient,
     //                      public CefRenderHandler {
 public:
     ClientHandle();
-    ClientHandle(char bid[37], char uid[37], mqd_t cli_mq);
+    ClientHandle(char uid[37], mqd_t cli_mq);
     ~ClientHandle();
+
+    CefRefPtr<CefBrowser> getMainBrowser();
 
     // CefClient methods
     virtual CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() OVERRIDE {return this;}
@@ -48,11 +50,10 @@ public:
     //                         const CefRenderHandler::RectList &dirtyRects,
     //                         const void *buffer, int width, int height) OVERRIDE;
 
-protected:
+private:
     typedef std::list<CefRefPtr<CefBrowser>> BrowserList;
     BrowserList browser_list;
     mqd_t cli_mq;
-    char bid[37];
     char uid[37];
 
 IMPLEMENT_REFCOUNTING(ClientHandle);

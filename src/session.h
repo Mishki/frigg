@@ -17,6 +17,7 @@ public:
 
     int getBid();
     std::string html();
+    void js(std::string code);
 
 private:
     int bid;

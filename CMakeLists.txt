@@ -20,8 +20,8 @@ set(FRIGG_SOURCE_FILES
     src/client_app.h
     src/client_handle.cpp
     src/client_handle.h
-    src/async_string.cpp
-    src/async_string.h
+    src/html_visitor.cpp
+    src/html_visitor.h
     src/ClientV8ExtensionHandler.h
     src/ClientV8ExtensionHandler.cpp
     src/MyV8Accessor.h)

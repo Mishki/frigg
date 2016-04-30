@@ -1,15 +1,20 @@
 #ifndef FRIGG_ASYNC_STRING_H
 #define FRIGG_ASYNC_STRING_H
 
+#include <mqueue.h>
 #include "include/cef_client.h"
 
-class AsyncString : public CefStringVisitor {
+class HtmlVisitor : public CefStringVisitor {
 
     public:
-    AsyncString() {}
+    HtmlVisitor(char uid[37], mqd_t cli_mq);
     virtual void Visit(const CefString& string) OVERRIDE;
 
-    IMPLEMENT_REFCOUNTING(AsyncString);
+private:
+    mqd_t cli_mq;
+    char uid[37];
+
+    IMPLEMENT_REFCOUNTING(HtmlVisitor);
 };
 
 
