@@ -5,15 +5,82 @@
 // #include "ClientV8ExtensionHandler.h"
 //#include "MyV8Accessor.h"
 
-ClientApp::ClientApp(FriggBrowser *frigg) {
-    this->frigg = frigg;
+ClientApp::ClientApp(std::string srv_name, std::string cli_name) {
+    srv_mq = mq_open(srv_name.c_str(), O_CREAT | O_RDONLY, 0664, 0);
+    if (srv_mq == (mqd_t) -1) {
+        perror("server.mq_open.srv_mq");
+    }
+
+    cli_mq = mq_open(cli_name.c_str(), O_CREAT | O_WRONLY, 0664, 0);
+    if (cli_mq == (mqd_t) -1) {
+        perror("server.mq_open.cli_mq");
+    }
+
+    thrd = std::thread(&ClientApp::mqComm, this);
+}
+
+ClientApp::~ClientApp() {
+    char buf[MSG_SIZE] = {0};
+    request *req = (request *) &buf;
+    req->method = QUIT;
+
+    if (mq_send(cli_mq, buf, sizeof(request), 0) == -1) {
+        perror("server.mq_send.cli_mq");
+    }
+
+    if (thrd.joinable()) {
+        thrd.join();
+    }
+
+    if (mq_close(srv_mq) == -1) {
+        perror("server.mq_close.srv_mq");
+    }
+
+    if (mq_close(cli_mq) == -1) {
+        perror("server.mq_close.cli_mq");
+    }
 }
 
 void ClientApp::OnContextInitialized() {
     CEF_REQUIRE_UI_THREAD();
-    std::unique_lock<std::mutex> lck(this->frigg->_mtx);
-    this->frigg->browser_init = true;
-    this->frigg->_cv.notify_all();
+    event.set_value(true);
+}
+
+void ClientApp::mqComm() {
+    fd_set rfds;
+    int nfds = std::max(srv_mq, cli_mq);
+
+    ready.wait();
+    while (true) {
+        FD_ZERO(&rfds);
+        FD_SET(srv_mq, &rfds);
+
+        if (select(nfds + 1, &rfds, NULL, NULL, NULL) == -1) {
+            perror("server.select");
+            break;
+        }
+
+        char buf[MSG_SIZE];
+        unsigned int prio;
+        if (mq_receive(srv_mq, &buf[0], MSG_SIZE, &prio) != -1) {
+            request *req = (request *) buf;
+            switch (req->method) {
+                case QUIT:
+                    CefPostTask(TID_UI, new QuitTask());
+                    goto terminate;
+
+                case SESSION:
+//                    CefPostTask(TID_UI, new SessionTask());
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    terminate:
+    return;
 }
 
 //void ClientApp::OnContextCreated(

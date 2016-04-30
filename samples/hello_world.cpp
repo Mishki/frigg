@@ -1,15 +1,19 @@
 #include <iostream>
-#include "frigg_browser.h"
+#include "frigg.h"
 
 int main(int argc, char *argv[]) {
     printf("Sample program started.\n");
 
-    FriggBrowser browser(argc, argv);
+    Browser browser(argc, argv);
 
-    FriggWebPage wp1 = browser.openUrl("https://www.google.com/");
-    printf("NUMBER IS: %d\n", wp1.getVal());
+    Browser browser2(argc, argv);
 
-    FriggWebPage wp2 = browser.openUrl("http://www.stroustrup.com/");
-    printf("NUMBER IS: %d\n", wp2.getVal());
+//    browser.tab("https://www.google.com/");
+//    printf("NUMBER IS: %d\n", session1.id());
+//    printf("%s\n", session1.html());
+//
+//    FriggSession session2 = browser.openUrl("http://www.stroustrup.com/");
+//    printf("NUMBER IS: %d\n", session2.id());
+//    printf("%s\n", session2.html());
 
 }
