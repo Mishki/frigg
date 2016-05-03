@@ -8,7 +8,6 @@ int main(int argc, char *argv[]) {
     Session session1 = browser1.tab("http://www.stroustrup.com/");
     printf("WWW: https://www.google.com/\n");
     printf("BROWSER ID: %d\n", session1.getBid());
-//    printf("%s\n", session1.html().c_str());
 
     for (int i = 0; i < 2; i++) {
         std::this_thread::sleep_for(std::chrono::milliseconds(2000));
@@ -42,8 +41,4 @@ int main(int argc, char *argv[]) {
         );
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-//    FriggSession session2 = browser.openUrl("http://www.stroustrup.com/");
-//    printf("NUMBER IS: %d\n", session2.id());
-//    printf("%s\n", session2.html());
-
 }
