@@ -33,8 +33,8 @@ include_directories(libcef3)
 include_directories(src)
 
 ## libcef3 library paths.
-set(LIBCEF_LIBS_DIR libcef3/binary)
-set(LIBCEF_RSRCS_DIR libcef3/resources)
+set(LIBCEF_LIBS_DIR libcef3/Release)
+set(LIBCEF_RSRCS_DIR libcef3/Resources)
 set(LIBCEF_LIB ${CMAKE_CURRENT_SOURCE_DIR}/${LIBCEF_LIBS_DIR}/libcef.so)
 
 add_library(${CMAKE_PROJECT_NAME} SHARED ${FRIGG_SOURCE_FILES})
