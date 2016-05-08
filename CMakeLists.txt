@@ -26,7 +26,7 @@ set(FRIGG_SOURCE_FILES
     src/ClientV8ExtensionHandler.cpp
     src/MyV8Accessor.h)
 
-set(FRIGG_SUPPORT_LIBS libcef_dll_wrapper pthread uuid rt X11)
+set(FRIGG_SUPPORT_LIBS libcef_dll_wrapper pthread rt X11)
 
 add_subdirectory(libcef3)
 include_directories(libcef3)

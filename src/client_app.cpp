@@ -2,41 +2,34 @@
 // #include "ClientV8ExtensionHandler.h"
 //#include "MyV8Accessor.h"
 
-ClientApp::ClientApp(std::string srv_name, std::string cli_name) {
-    srv_mq = mq_open(srv_name.c_str(), O_CREAT | O_RDONLY, 0664, 0);
-    if (srv_mq == (mqd_t) -1) {
-        perror("server.mq_open.srv_mq");
-    }
+ClientApp::ClientApp(int srv_fd, int cli_fd) {
+    this->srv_fd = srv_fd;
+    this->cli_fd = cli_fd;
 
-    cli_mq = mq_open(cli_name.c_str(), O_CREAT | O_WRONLY, 0664, 0);
-    if (cli_mq == (mqd_t) -1) {
-        perror("server.mq_open.cli_mq");
+    if (std::atexit(ClientApp::~ClientApp) != 0) {
+        perror("std::atexit(ClientApp::~ClientApp) failed");
+        std::exit(EXIT_FAILURE);
     }
 
     ready = event.get_future();
-    thrd = std::thread(&ClientApp::mqComm, this);
+    thrd = std::thread(&ClientApp::ipc_loop, this);
 }
 
 ClientApp::~ClientApp() {
-    char buf[MSG_SIZE] = {0};
-    request *req = (request *) &buf;
-    req->method = QUIT;
-
-    if (mq_send(cli_mq, buf, sizeof(request), 0) == -1) {
-        perror("server.mq_send.cli_mq");
-    }
+//    char buf[MSG_SIZE] = {0};
+//    request *req = (request *) &buf;
+//    req->method = QUIT;
+//
+//    if (mq_send(cli_mq, buf, sizeof(request), 0) == -1) {
+//        perror("server.mq_send.cli_mq");
+//    }
 
     if (thrd.joinable()) {
         thrd.join();
     }
 
-    if (mq_close(srv_mq) == -1) {
-        perror("server.mq_close.srv_mq");
-    }
-
-    if (mq_close(cli_mq) == -1) {
-        perror("server.mq_close.cli_mq");
-    }
+    close(srv_fd);
+    close(cli_fd);
 }
 
 void ClientApp::OnContextInitialized() {
@@ -44,17 +37,15 @@ void ClientApp::OnContextInitialized() {
     event.set_value(true);
 }
 
-void ClientApp::mqComm() {
+void ClientApp::ipc_loop() {
     fd_set rfds;
-    int nfds = std::max(srv_mq, cli_mq);
-
     ready.wait();
     while (true) {
         FD_ZERO(&rfds);
-        FD_SET(srv_mq, &rfds);
+        FD_SET(srv_fd, &rfds);
 
-        if (select(nfds + 1, &rfds, NULL, NULL, NULL) == -1) {
-            perror("server.select");
+        if (select(srv_fd + 1, &rfds, NULL, NULL, NULL) == -1) {
+            perror("server.select()");
             break;
         }
 
