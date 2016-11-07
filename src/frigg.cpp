@@ -20,25 +20,35 @@ namespace {
 
 }
 
-Browser::Browser(int argc, char *argv[]) {
-    uuid_t uuid = {0};
+Browser::Browser() {
+    int srv_pipe[2];
+    if (pipe(srv_pipe) == -1) {
+        perror("client.pipe(srv_pipe) failed");
+    }
 
-    uuid_generate(uuid);
-    char srv_uuid[37];
-    uuid_unparse_lower(uuid, srv_uuid);
-    srv_name = "/" + std::string(srv_uuid);
-
-    uuid_generate(uuid);
-    char cli_uuid[37];
-    uuid_unparse_lower(uuid, cli_uuid);
-    cli_name = "/" + std::string(cli_uuid);
+    int cli_pipe[2];
+    if (pipe(cli_pipe) == -1) {
+        perror("client.pipe(cli_pipe) failed");
+    }
 
     if ((cef_pid = fork()) == -1) {
-        perror("client.fork");
-        _exit(EXIT_FAILURE);
+        perror("client.fork() failed");
+        std::exit(EXIT_FAILURE);
     } else if (cef_pid == 0) {
+        close(srv_pipe[1]);
+        close(cli_pipe[0]);
+
+        uuid_t uuid = {0};
+        uuid_generate(uuid);
+        char srv_uuid[37];
+        uuid_unparse_lower(uuid, srv_uuid);
+        name = "frigg-" + std::string(srv_uuid);
+
+        char* argv[] ={strdup(name.c_str()), NULL};
+        int argc = sizeof(argv) / sizeof(char*) - 1;
+
         CefMainArgs main_args(argc, argv);
-        CefRefPtr<ClientApp> app(new ClientApp(srv_name, cli_name));
+        CefRefPtr<ClientApp> app(new ClientApp(srv_pipe[0], cli_pipe[1]));
 
         // TODO REMOVE
         XSetErrorHandler(XErrorHandlerImpl);
@@ -50,105 +60,82 @@ Browser::Browser(int argc, char *argv[]) {
         std::random_device rd;
         std::uniform_int_distribution<int> dist(49152, 65535);
         int port = dist(rd);
-
         LOG(INFO) << "debbuging on port: " << port;
         settings.remote_debugging_port = port;
+
         CefInitialize(main_args, settings, app.get(), NULL);
 
         CefRunMessageLoop();
         CefShutdown();
-        app.get()->~ClientApp();
-        _exit(EXIT_SUCCESS);
+        std::exit(EXIT_SUCCESS);
     }
 
-    srv_mq = mq_open(srv_name.c_str(), O_CREAT | O_WRONLY, 0664, 0);
-    if (srv_mq == (mqd_t) -1) {
-        perror("client.mq_open.srv_mq\n");
-    }
+    close(srv_pipe[0]);
+    srv_fd = srv_pipe[1];
 
-    cli_mq = mq_open(cli_name.c_str(), O_CREAT | O_RDONLY, 0664, 0);
-    if (cli_mq == (mqd_t) -1) {
-        perror("client.mq_open.cli_mq");
-    }
+    close(cli_pipe[1]);
+    cli_fd = cli_pipe[0];
 
-    thrd = std::thread(&Browser::mqComm, this);
-
-
-    //    char buf[MSG_SIZE] = {0};
-    //    request *req = (request *)&buf;
-    //    req->method = INIT;
-    //
-    //    if (mq_send(srv_mq, buf, sizeof(request), 0) == -1) {
-    //        perror("client.mq_send.srv_mq");
-    //    }
-
+    thrd = std::thread(&Browser::ipc_loop, this);
 }
 
 Browser::~Browser() {
-    char buf[MSG_SIZE];
-    uuid_t uuid = {0};
-    uuid_generate(uuid);
-    request *req = (request *) buf;
-    uuid_unparse_lower(uuid, req->uid);
-    req->method = QUIT;
-
-    if (mq_send(srv_mq, buf, sizeof(request), 0) == -1) {
-        perror("client.mq_send.srv_mq");
-    }
+//    char buf[MSG_SIZE];
+//    uuid_t uuid = {0};
+//    uuid_generate(uuid);
+//    request *req = (request *) buf;
+//    uuid_unparse_lower(uuid, req->uid);
+//    req->method = QUIT;
+//
+//    if (mq_send(srv_mq, buf, sizeof(request), 0) == -1) {
+//        perror("client.mq_send.srv_mq");
+//    }
 
     if (thrd.joinable()) {
         thrd.join();
     }
 
-    if (mq_close(srv_mq) == -1) {
-        perror("client.mq_close.srv_mq");
-    }
-
-    if (mq_close(cli_mq) == -1) {
-        perror("client.mq_close.cli_mq");
-    }
-
-    mq_unlink(srv_name.c_str());
-    mq_unlink(cli_name.c_str());
+    close(srv_fd);
+    close(cli_fd);
 }
 
-void Browser::mqComm() {
+void Browser::ipc_loop() {
     fd_set rfds;
-    int nfds = std::max(srv_mq, cli_mq);
     while (true) {
         FD_ZERO(&rfds);
-        FD_SET(cli_mq, &rfds);
+        FD_SET(cli_fd, &rfds);
 
-        if (select(nfds + 1, &rfds, NULL, NULL, NULL) == -1) {
-            perror("client.select");
+        if (select(cli_fd + 1, &rfds, NULL, NULL, NULL) == -1) {
+            perror("client.select()");
             break;
         }
 
         char buf[MSG_SIZE];
-        unsigned int prio;
-        if (mq_receive(cli_mq, &buf[0], MSG_SIZE, &prio) != -1) {
-            request *req = (request *) buf;
-            std::vector<std::string> args = unparse(req->args);
-            switch (req->method) {
-                case QUIT:
-                    CefQuitMessageLoop();
-                    goto terminate;
+        if (read(cli_fd, &buf[0], MSG_SIZE) != -1) {
+            fprintf(stderr, buf);
 
-                case SESSION:
-                    promises[req->uid].set_value(std::stol(args[0].c_str()));
-                    break;
-
-                case HTML:
+//            request *req = (request *) buf;
+//            std::vector<std::string> args = unparse(req->args);
+//            switch (req->method) {
+//                case QUIT:
+//                    CefQuitMessageLoop();
+//                    goto terminate;
+//
+//                case SESSION:
+//                    promises[req->uid].set_value(std::stol(args[0].c_str()));
+//                    break;
+//
+//                case HTML:
 //                    promises[req->uid].set_value(req->shmem);
-                    break;
-
-                case JS:
-                    promises[req->uid].set_value(1);
-                    break;
-
-                default:
-                    break;
-            }
+//                    break;
+//
+//                case JS:
+//                    promises[req->uid].set_value(1);
+//                    break;
+//
+//                default:
+//                    break;
+//            }
         }
     }
 
@@ -156,23 +143,23 @@ void Browser::mqComm() {
     return;
 }
 
-Session Browser::tab(std::string url) {
-    char buf[MSG_SIZE];
-    uuid_t uuid = {0};
-    uuid_generate(uuid);
-    request *req = (request *) buf;
-    uuid_unparse_lower(uuid, req->uid);
-    req->method = SESSION;
-
-    int size = parse(req->args, 1, url.c_str());
-
-    if (mq_send(srv_mq, buf, sizeof(request) + size, 0) == -1) {
-        perror("client.mq_send.srv_mq");
-    }
-
-    promises[req->uid] = std::promise<long>();
-    std::future<long> fut = promises[req->uid].get_future();
-    fut.wait();
-
-    return Session(&promises, srv_mq, (int) fut.get());
-}
+//Session Browser::tab(std::string url) {
+//    char buf[MSG_SIZE];
+//    uuid_t uuid = {0};
+//    uuid_generate(uuid);
+//    request *req = (request *) buf;
+//    uuid_unparse_lower(uuid, req->uid);
+//    req->method = SESSION;
+//
+//    int size = parse(req->args, 1, url.c_str());
+//
+//    if (mq_send(srv_mq, buf, sizeof(request) + size, 0) == -1) {
+//        perror("client.mq_send.srv_mq");
+//    }
+//
+//    promises[req->uid] = std::promise<long>();
+//    std::future<long> fut = promises[req->uid].get_future();
+//    fut.wait();
+//
+//    return Session(&promises, srv_mq, (int) fut.get());
+//}

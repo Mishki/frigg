@@ -1,13 +1,16 @@
 #ifndef FRIGG_CLIENT_APP_H
 #define FRIGG_CLIENT_APP_H
 
+#include <cstdlib>
+#include <future>
+
 #include "include/cef_app.h"
 #include "include/wrapper/cef_helpers.h"
+
 #include "frigg.h"
 #include "tasks.h"
 #include "request.h"
 #include "client_handle.h"
-#include <future>
 
 class ClientApp : public CefApp,
                   public CefBrowserProcessHandler,
@@ -16,7 +19,7 @@ class ClientApp : public CefApp,
 
 public:
     ClientApp() {};
-    ClientApp(std::string srv_name, std::string cli_name);
+    ClientApp(int srv_fd, int cli_fd);
     ~ClientApp();
 
     virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() OVERRIDE {return this;}
@@ -30,10 +33,12 @@ public:
     //    ) OVERRIDE;
 
 private:
-    void mqComm();
+    void ipc_loop();
 
     std::thread thrd;
-    mqd_t srv_mq, cli_mq;
+    int srv_fd, cli_fd;
+
+//    mqd_t srv_mq, cli_mq;
     std::promise<bool> event;
     std::future<bool> ready;
     std::map<int, CefRefPtr<ClientHandle>> handles;
