@@ -50,37 +50,37 @@ void ClientApp::ipc_loop() {
         }
 
         char buf[MSG_SIZE];
-        unsigned int prio;
-        if (mq_receive(srv_mq, &buf[0], MSG_SIZE, &prio) != -1) {
-            request *req = (request *) buf;
-            std::vector<std::string> args = unparse(req->args);
-
-            switch (req->method) {
-                case QUIT:
-                    CefPostTask(TID_UI, new QuitTask());
-                    goto terminate;
-
-                case SESSION:
-                    CefPostTask(TID_UI, new SessionTask(
-                        &handles, req->uid, cli_mq, args[0]
-                    ));
-                    break;
-
-                case HTML:
-                    CefPostTask(TID_UI, new GetHTMLTask(
-                        &handles, req->uid, cli_mq, std::stoi(args[0])
-                    ));
-                    break;
-
-                case JS:
-                    CefPostTask(TID_UI, new ExecJSTask(
-                        &handles, req->uid, cli_mq, std::stoi(args[0]), args[1]
-                    ));
-                    break;
-
-                default:
-                    break;
-            }
+        if (read(srv_fd, &buf[0], MSG_SIZE) != -1) {
+            write(cli_fd, buf, MSG_SIZE);
+//            request *req = (request *) buf;
+//            std::vector<std::string> args = unparse(req->args);
+//
+//            switch (req->method) {
+//                case QUIT:
+//                    CefPostTask(TID_UI, new QuitTask());
+//                    goto terminate;
+//
+//                case SESSION:
+//                    CefPostTask(TID_UI, new SessionTask(
+//                        &handles, req->uid, cli_mq, args[0]
+//                    ));
+//                    break;
+//
+//                case HTML:
+//                    CefPostTask(TID_UI, new GetHTMLTask(
+//                        &handles, req->uid, cli_mq, std::stoi(args[0])
+//                    ));
+//                    break;
+//
+//                case JS:
+//                    CefPostTask(TID_UI, new ExecJSTask(
+//                        &handles, req->uid, cli_mq, std::stoi(args[0]), args[1]
+//                    ));
+//                    break;
+//
+//                default:
+//                    break;
+//            }
         }
     }
 

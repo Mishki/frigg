@@ -5,6 +5,7 @@
 #include <thread>
 #include <random>
 #include <future>
+#include <uuid>
 
 //#include <unistd.h>
 
@@ -24,7 +25,7 @@ public:
     Browser();
     ~Browser();
 
-    Session tab(std::string url);
+//    Session tab(std::string url);
 
 private:
     void ipc_loop();
@@ -32,6 +33,7 @@ private:
     pid_t cef_pid;
     std::thread thrd;
     int srv_fd, cli_fd;
+    std::string name;
 
 
     std::map<std::string, std::promise<long>> promises;
